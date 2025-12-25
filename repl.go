@@ -23,12 +23,14 @@ func startRepl() {
 
 		command, exists := getCommands()[commandName]
 		if exists {
-			config.TrackCommand(commandName)
 			err := command.callback(config)
+			if err == nil {
+				config.TrackCommand(commandName)
+				continue
+			}
 			if err != nil {
 				fmt.Println(err)
 			}
-			continue
 		} else {
 			fmt.Println("Unknown command")
 			continue

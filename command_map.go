@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type locationarea struct {
@@ -19,7 +20,8 @@ type locationarea struct {
 }
 
 func commandMap(cfg *Config) error {
-	offstr := "0"
+
+	offstr := strconv.Itoa(cfg.CommandCalls["map"] * 20)
 	locURL := "https://pokeapi.co/api/v2/location-area/?offset=" + offstr
 
 	res, err := http.Get(locURL)
