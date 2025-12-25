@@ -8,6 +8,7 @@ import (
 )
 
 func startRepl() {
+	config := NewConfig()
 	reader := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex > ")
@@ -22,7 +23,8 @@ func startRepl() {
 
 		command, exists := getCommands()[commandName]
 		if exists {
-			err := command.callback()
+			config.TrackCommand(commandName)
+			err := command.callback(config)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -40,10 +42,24 @@ func cleanInput(text string) []string {
 	return words
 }
 
+type Config struct {
+	CommandCalls map[string]int
+}
+
+func NewConfig() *Config {
+	return &Config{
+		CommandCalls: make(map[string]int),
+	}
+}
+
+func (c *Config) TrackCommand(commandName string) {
+	c.CommandCalls[commandName]++
+}
+
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    func(*Config) error
 }
 
 func getCommands() map[string]cliCommand {
@@ -57,6 +73,11 @@ func getCommands() map[string]cliCommand {
 			name:        "exit",
 			description: "Exit the Pokedex",
 			callback:    commandExit,
+		},
+		"map": {
+			name:        "map",
+			description: "returns 20 locations",
+			callback:    commandMap,
 		},
 	}
 }
