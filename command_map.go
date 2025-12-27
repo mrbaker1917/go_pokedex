@@ -48,3 +48,13 @@ func commandMap(cfg *Config) error {
 
 	return nil
 }
+
+func commandMapB(cfg *Config) error {
+	if cfg.CommandCalls["map"] > 0 {
+		cfg.CommandCalls["map"] -= 2
+		commandMap(cfg)
+	} else {
+		commandMap(cfg)
+	}
+	return nil
+}

@@ -24,13 +24,10 @@ func startRepl() {
 		command, exists := getCommands()[commandName]
 		if exists {
 			err := command.callback(config)
-			if err == nil {
-				config.TrackCommand(commandName)
-				continue
-			}
 			if err != nil {
 				fmt.Println(err)
 			}
+			continue
 		} else {
 			fmt.Println("Unknown command")
 			continue
@@ -80,6 +77,11 @@ func getCommands() map[string]cliCommand {
 			name:        "map",
 			description: "returns 20 locations",
 			callback:    commandMap,
+		},
+		"mapb": {
+			name:        "mapb",
+			description: "goes back 20 locations",
+			callback:    commandMapB,
 		},
 	}
 }
