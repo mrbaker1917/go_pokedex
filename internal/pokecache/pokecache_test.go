@@ -59,37 +59,3 @@ func TestReapLoop(t *testing.T) {
 		return
 	}
 }
-```
-Now that the basics pass, here are some ideas for extra tests that actually add value:
-
-    Get on missing key
-        Arrange: cache := NewCache(...)
-        Act: val, ok := cache.Get("does-not-exist")
-        Assert: !ok, and val == nil.
-
-    Overwrite existing key
-        Add a key with one value.
-        Add the same key with a different value.
-        Get should return the most recent value.
-
-    Reap actually respects interval
-        Use a very short interval (like 5 * time.Millisecond).
-        Add two entries with a small delay:
-            Add key "a".
-            time.Sleep(interval / 2)
-            Add key "b".
-        Sleep interval more, then:
-            "a" may be gone, "b" should still be present.
-        This checks that you’re using createdAt correctly, not nuking everything too aggressively.
-
-    Concurrency sanity check
-        Create a cache with a somewhat larger interval.
-        In a loop:
-            go cache.Add(fmt.Sprintf("key-%d", i), []byte("val"))
-        After a short sleep, iterate a few of those keys and ensure Get doesn’t panic and often returns ok == true.
-        This is more about making sure your mutex usage is sound.
-
-Pick one or two of these (no need to do all of them) and implement them in pokecache_test.go.
-
-Would you like help sketching one specific test (e.g., the “overwrite” one) in more detail, or do you want to try writing one yourself first and then have me review it?
-```
