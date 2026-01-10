@@ -7,7 +7,7 @@ import (
 )
 
 func commandCatch(cfg *config, args []string) error {
-	if len(args) == 0 {
+	if len(args) != 1 {
 		return errors.New("You must provide a pokemon name to catch.")
 	}
 
@@ -19,25 +19,19 @@ func commandCatch(cfg *config, args []string) error {
 	if err != nil {
 		return err
 	}
-	roll := rand.Intn(100)
 
 	baseExperience := poke.BaseExperience
-	catchChance := 80 - (baseExperience / 5)
 
-	if catchChance < 5 {
-		catchChance = 5
-	}
+	roll := rand.Intn(baseExperience)
 
-	if catchChance > 95 {
-		catchChance = 95
-	}
-
-	if roll < catchChance {
-		fmt.Printf("%s was caught!\n", pokemonName)
-		cfg.pokedex[pokemonName] = poke
-	} else {
+	if roll > 40 {
 		fmt.Printf("%s escaped!\n", pokemonName)
+		return nil
 	}
+
+	fmt.Printf("%s was caught!\n", pokemonName)
+
+	cfg.pokedex[pokemonName] = poke
 
 	return nil
 }
